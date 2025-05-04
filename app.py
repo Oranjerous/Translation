@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, send_file
 import os
 from PIL import Image
-import pytesseract
+from paddleocr import PaddleOCR
 from docx import Document
 from fill_template import fill_residence_template
 from werkzeug.utils import secure_filename
@@ -15,13 +15,11 @@ TEMPLATE_PATH = "static/Residence_Template_Fillable.docx"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_FOLDER, exist_ok=True)
 
-def extract_data_from_image(image_path):
-    # فتح الصورة وتحويلها إلى الأبيض والأسود
-    img = Image.open(image_path).convert("L")
-    img = img.point(lambda x: 0 if x < 140 else 255)
+ocr = PaddleOCR(use_angle_cls=True, lang='ar')
 
-    # استخراج النص مع إعدادات Tesseract محسّنة
-    text = pytesseract.image_to_string(img, lang='eng+ara', config='--psm 6')
+def extract_data_from_image(image_path):
+    result = ocr.ocr(image_path, cls=True)
+    extracted_text = "\n".join([line[1][0] for line in result[0]])
 
     data = {
         "PERSON_NO": "",
@@ -38,7 +36,7 @@ def extract_data_from_image(image_path):
         "CARD_NO": ""
     }
 
-    lines = text.splitlines()
+    lines = extracted_text.splitlines()
     for line in lines:
         if "Name" in line or "الاسم" in line:
             data["NAME"] = line.split(":")[-1].strip()
