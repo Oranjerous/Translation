@@ -16,7 +16,12 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_FOLDER, exist_ok=True)
 
 def extract_data_from_image(image_path):
-    text = pytesseract.image_to_string(Image.open(image_path), lang='eng+ara')
+    # فتح الصورة وتحويلها إلى الأبيض والأسود
+    img = Image.open(image_path).convert("L")
+    img = img.point(lambda x: 0 if x < 140 else 255)
+
+    # استخراج النص مع إعدادات Tesseract محسّنة
+    text = pytesseract.image_to_string(img, lang='eng+ara', config='--psm 6')
 
     data = {
         "PERSON_NO": "",
