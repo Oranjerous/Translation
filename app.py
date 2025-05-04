@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, send_file
 import os
 from PIL import Image
@@ -79,5 +78,5 @@ def upload():
     return render_template("upload.html")
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8080))  # تم التغيير هنا
     app.run(host="0.0.0.0", port=port)
