@@ -1,24 +1,32 @@
-# استخدم صورة أساس تحتوي على Python و Debian لتثبيت Tesseract
+# استخدم صورة بايثون الرسمية كأساس
 FROM python:3.11-slim
 
-# تثبيت أدوات النظام + Tesseract
+# تثبيت المتطلبات الأساسية للنظام
 RUN apt-get update && apt-get install -y \
-    tesseract-ocr \
-    libgl1 \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgl1-mesa-glx \
+    fonts-dejavu-core \
+    libgomp1 \
+    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# تحديد مجلد العمل
+# إنشاء مجلد للتطبيق
 WORKDIR /app
 
-# نسخ جميع ملفات المشروع إلى داخل الحاوية
-COPY . .
+# نسخ الملفات
+COPY . /app
 
-# تثبيت متطلبات المشروع
-RUN pip install --no-cache-dir -r requirements.txt
+# تثبيت المتطلبات
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# تحديد المنفذ الذي سيستمع عليه Flask
-ENV PORT=5000
+# تعيين المنفذ
+ENV PORT=8080
+EXPOSE 8080
 
-# تحديد أمر التشغيل
+# تشغيل التطبيق
 CMD ["python", "app.py"]

@@ -1,0 +1,24 @@
+
+<!doctype html>
+<html>
+<head><title>Translation Memory</title></head>
+<body>
+<h2>إضافة إلى ذاكرة الترجمة</h2>
+<form method="post">
+    <label>النص العربي:</label><br>
+    <textarea name="source" rows="2" cols="60" required></textarea><br><br>
+    <label>الترجمة الإنجليزية:</label><br>
+    <textarea name="translation" rows="2" cols="60" required></textarea><br><br>
+    <label>نوع الوثيقة (اختياري):</label><br>
+    <input type="text" name="document_type"><br><br>
+    <input type="submit" value="إضافة">
+</form>
+
+<h3>آخر الترجمات المدخلة:</h3>
+<ul>
+{% for source, translated, doc_type in entries %}
+    <li><b>{{ source }}</b> → {{ translated }} {% if doc_type %} <i>({{ doc_type }})</i> {% endif %}</li>
+{% endfor %}
+</ul>
+</body>
+</html>

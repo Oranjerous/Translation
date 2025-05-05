@@ -1,0 +1,6 @@
+flask
+paddleocr
+paddlepaddle
+python-docx
+werkzeug
+Pillow
